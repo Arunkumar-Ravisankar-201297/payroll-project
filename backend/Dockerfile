@@ -1,10 +1,9 @@
-# Use a slim Python base image
-FROM python:3.11-slim
+# Use a full Python image to avoid mysqlclient build issues
+FROM python:3.11
 
-# Set working directory inside the container
-WORKDIR /app
+WORKDIR /code
 
-# Avoid writing .pyc files and force stdout logging
+# Prevent Python from writing pyc files and enable unbuffered logs
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 
@@ -14,20 +13,22 @@ RUN apt-get update && apt-get install -y \
     python3-dev \
     libpq-dev \
     build-essential \
+    default-libmysqlclient-dev \
+    pkg-config \
+    libssl-dev \
     && apt-get clean
 
-# Set pip version (stable and compatible)
-RUN pip install --upgrade pip==23.2.1
+# Upgrade pip
+RUN pip install --upgrade pip setuptools wheel
 
-# Install Python dependencies
+# Install dependencies
 COPY requirements.txt .
 RUN pip install -r requirements.txt
 
-# Copy entire Django project into container
+# Copy project files
 COPY . .
 
-# Expose Django default port
 EXPOSE 8000
 
-# Default command to run the Django development server
+# Run the Django development server
 CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]

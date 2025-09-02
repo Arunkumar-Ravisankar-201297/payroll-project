@@ -75,10 +75,15 @@ WSGI_APPLICATION = 'payroll_project.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'djongo',
-        'NAME': BASE_DIR / 'payroll_db',
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'payroll_db',
+        'USER': 'root',
+        'PASSWORD': '412315114010@',
+        'HOST': 'mysql',
+        'PORT': '3306',
     }
 }
+
 
 
 # Password validation
